@@ -1,12 +1,12 @@
-const express = require('express')
+import express from 'express';
 const router = express.Router()
 
-const ChatController = require('../controllers/chat')
-const upload = require('../middlewares/upload-middleware')
+import ChatController from '../controllers/chat.js';
+import upload from '../middlewares/upload-middleware.js';
 
-router.get('/', ChatController.chat_check_default)
+router.get('/session/get-list', ChatController.chat_get_session)
 
-router.post('/message', ChatController.chat_send_message)
+router.get('/session/:sessionId/chat-history', ChatController.chat_get_history_by_session)
 
 router.post('/prompt', ChatController.chat_send_prompt)
 
@@ -14,4 +14,4 @@ router.post('/upload', upload.single("document"), ChatController.chat_upload_doc
 
 router.post('/ask-doc', ChatController.chat_send_prompt_document)
 
-module.exports = router
+export default router;
