@@ -7,30 +7,23 @@ import { auth, db } from './src/firebase.js'; // Add .js extension
 import chatRoutes from './src/routes/chat.js'; // Add .js extension
 
 const app = express();
+const allowedOrigins = ['https://shields.atharianr.dev', 'http://localhost:3000'];
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// Handling CORS
-// app.use((req, res, next) => {
-//     res.header('Access-Control-Allow-Origin', '*');
-//     res.header(
-//         'Access-Control-Allow-Headers',
-//         'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-//     );
-//     if (req.method === 'OPTIONS') {
-//         res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-//         return res.status(200).json({});
-//     }
-//     next();
-// });
-
 app.use(cors({
-    origin: ['*'], // or '*' for all origins
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true // if you need cookies or authorization headers
+    credentials: true
 }));
 
 // Routing
